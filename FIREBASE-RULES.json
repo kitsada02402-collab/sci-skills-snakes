@@ -1,0 +1,210 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "config": {
+      ".read": false,
+      ".write": false
+    },
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid && (!newData.exists() || (root.child('config/teacherPass').exists() && newData.val() === root.child('config/teacherPass').val()))"
+      }
+    },
+    "bank": {
+      ".read": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()",
+      ".write": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()"
+    },
+    "roomIndex": {
+      ".read": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()",
+      ".write": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()"
+    },
+    "rooms": {
+      "$room": {
+        ".read": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()",
+        ".write": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()",
+        "meta": {
+          ".read": "auth != null"
+        },
+        "players": {
+          ".read": "auth != null",
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && (data.exists() || root.child('rooms/' + $room + '/meta/status').val() === 'lobby')",
+            ".validate": "newData.hasChildren(['name', 'cls', 'av', 'ts'])",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 14"
+            },
+            "cls": {
+              ".validate": "newData.isString() && newData.val().length <= 8"
+            },
+            "av": {
+              "a": {
+                ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 16"
+              },
+              "c": {
+                ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 8"
+              },
+              "$other": {
+                ".validate": false
+              }
+            },
+            "ts": {
+              ".validate": "newData.isNumber()"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "presence": {
+          ".read": "auth != null",
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid",
+            ".validate": "newData.val() === true"
+          }
+        },
+        "assign": {
+          ".read": "auth != null"
+        },
+        "ginfo": {
+          ".read": "auth != null"
+        },
+        "rank": {
+          ".read": "auth != null"
+        },
+        "g": {
+          ".read": "auth != null",
+          "$gid": {
+            "rolls": {
+              "$uid": {
+                ".write": "auth != null && auth.uid === $uid && root.child('rooms/' + $room + '/assign/' + $uid).val() === $gid && root.child('rooms/' + $room + '/meta/status').val() === 'order'",
+                ".validate": "newData.val() === true"
+              }
+            }
+          }
+        },
+        "ans": {
+          "$gid": {
+            "$uid": {
+              ".read": "auth != null && auth.uid === $uid",
+              ".write": "auth != null && auth.uid === $uid && root.child('rooms/' + $room + '/assign/' + $uid).val() === $gid && root.child('rooms/' + $room + '/meta/status').val() === 'play' && root.child('rooms/' + $room + '/g/' + $gid + '/round/phase').val() === 'answer' && newData.child('n').val() === root.child('rooms/' + $room + '/g/' + $gid + '/round/n').val() && newData.child('t').val() === now && now <= root.child('rooms/' + $room + '/g/' + $gid + '/round/deadline').val() + 1500 && (!data.exists() || newData.child('n').val() > data.child('n').val())",
+              ".validate": "newData.hasChildren(['n', 'k', 't']) && newData.child('n').isNumber() && newData.child('k').isNumber() && newData.child('k').val() >= 0 && newData.child('k').val() <= 3 && newData.child('t').isNumber()",
+              "n": {
+                ".validate": true
+              },
+              "k": {
+                ".validate": true
+              },
+              "t": {
+                ".validate": true
+              },
+              "$other": {
+                ".validate": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "sci14": {
+      ".read": false,
+      ".write": false,
+      "bank": {
+        ".read": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()",
+        ".write": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()"
+      },
+      "roomIndex": {
+        ".read": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()",
+        ".write": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()"
+      },
+      "rooms": {
+        "$room": {
+          ".read": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()",
+          ".write": "auth != null && root.child('config/teacherPass').exists() && root.child('admins/' + auth.uid).val() === root.child('config/teacherPass').val()",
+          "meta": {
+            ".read": "auth != null"
+          },
+          "players": {
+            ".read": "auth != null",
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid && (data.exists() || root.child('sci14/rooms/' + $room + '/meta/status').val() === 'lobby')",
+              ".validate": "newData.hasChildren(['name', 'cls', 'av', 'ts'])",
+              "name": {
+                ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 14"
+              },
+              "cls": {
+                ".validate": "newData.isString() && newData.val().length <= 8"
+              },
+              "av": {
+                "a": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 16"
+                },
+                "c": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 8"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              },
+              "ts": {
+                ".validate": "newData.isNumber()"
+              },
+              "$other": {
+                ".validate": false
+              }
+            }
+          },
+          "presence": {
+            ".read": "auth != null",
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid",
+              ".validate": "newData.val() === true"
+            }
+          },
+          "assign": {
+            ".read": "auth != null"
+          },
+          "ginfo": {
+            ".read": "auth != null"
+          },
+          "rank": {
+            ".read": "auth != null"
+          },
+          "g": {
+            ".read": "auth != null",
+            "$gid": {
+              "rolls": {
+                "$uid": {
+                  ".write": "auth != null && auth.uid === $uid && root.child('sci14/rooms/' + $room + '/assign/' + $uid).val() === $gid && root.child('sci14/rooms/' + $room + '/meta/status').val() === 'order'",
+                  ".validate": "newData.val() === true"
+                }
+              }
+            }
+          },
+          "ans": {
+            "$gid": {
+              "$uid": {
+                ".read": "auth != null && auth.uid === $uid",
+                ".write": "auth != null && auth.uid === $uid && root.child('sci14/rooms/' + $room + '/assign/' + $uid).val() === $gid && root.child('sci14/rooms/' + $room + '/meta/status').val() === 'play' && root.child('sci14/rooms/' + $room + '/g/' + $gid + '/round/phase').val() === 'answer' && newData.child('n').val() === root.child('sci14/rooms/' + $room + '/g/' + $gid + '/round/n').val() && newData.child('t').val() === now && now <= root.child('sci14/rooms/' + $room + '/g/' + $gid + '/round/deadline').val() + 1500 && (!data.exists() || newData.child('n').val() > data.child('n').val())",
+                ".validate": "newData.hasChildren(['n', 'k', 't']) && newData.child('n').isNumber() && newData.child('k').isNumber() && newData.child('k').val() >= 0 && newData.child('k').val() <= 3 && newData.child('t').isNumber()",
+                "n": {
+                  ".validate": true
+                },
+                "k": {
+                  ".validate": true
+                },
+                "t": {
+                  ".validate": true
+                },
+                "$other": {
+                  ".validate": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
